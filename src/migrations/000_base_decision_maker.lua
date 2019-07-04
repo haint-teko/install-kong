@@ -3,7 +3,7 @@ return {
     up = [[
       CREATE TABLE IF NOT EXISTS "decision_makers" (
         "id"           UUID                         PRIMARY KEY,
-        "identifier"   TEXT                         UNIQUE,
+        "name"         TEXT                         UNIQUE,
         "created_at"   TIMESTAMP WITHOUT TIME ZONE  DEFAULT (CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC'),
         "scheme"       TEXT,
         "host"         TEXT,
@@ -24,14 +24,14 @@ return {
     up = [[
       CREATE TABLE IF NOT EXISTS decision_makers(
         id          uuid PRIMARY KEY,
-        identifier  text,
+        name        text,
         created_at  timestamp,
         scheme      text,
         host        text,
         port        bigint,
         path        text
       );
-      CREATE INDEX IF NOT EXISTS ON decision_makers(identifier);
+      CREATE INDEX IF NOT EXISTS ON decision_makers(name);
       CREATE INDEX IF NOT EXISTS ON decision_makers(host);
     ]],
   }
