@@ -2,7 +2,7 @@ local typedefs = require "kong.db.schema.typedefs"
 
 
 return {
-  name = "decision-maker",
+  name = "decision-makers",
   fields = {
     { protocols = typedefs.protocols_http },
     {
