@@ -7,8 +7,6 @@ local HTTP_500 = 500
 
 DecisionMakerHandler.VERSION = "1.0.0"
 DecisionMakerHandler.PRIORITY = 1010
-local pl_pretty = require "pl.pretty"
-
 
 function DecisionMakerHandler:new()
   DecisionMakerHandler.super.init_worker(self, "decision-maker")
