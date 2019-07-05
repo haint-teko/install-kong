@@ -3,6 +3,7 @@ local http = require "resty.http"
 
 local kong = kong
 local DecisionMakerHandler = BasePlugin:extend()
+local HTTP_500 = 500
 
 DecisionMakerHandler.VERSION = "1.0.0"
 DecisionMakerHandler.PRIORITY = 1010
@@ -39,7 +40,7 @@ local function make_decision(conf)
 
   if connected == false then
     kong.log.err("Could not connect to any decision-maker service")
-    return kong.response.exit(500, { message = "An unexpected error occurred" })
+    return kong.response.exit(HTTP_500, { message = "An unexpected error occurred" })
   end
 
   local res, err = client:request {
@@ -51,7 +52,7 @@ local function make_decision(conf)
 
   if not res then
     kong.log.err("Could not receive any data from decision-maker service: " .. err)
-    return kong.response.exit(500, { message = "An unexpected error occurred" })
+    return kong.response.exit(HTTP_500, { message = "An unexpected error occurred" })
   end
 
   local response_status = res.status
