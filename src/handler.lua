@@ -89,7 +89,7 @@ end
 function DecisionMakerHandler:access(conf)
   DecisionMakerHandler.super.access(self)
   local status_code, content = make_decision(conf)
-  if status_code ~= 200 or status_code ~= 201 then
+  if status_code ~= 200 and status_code ~= 201 then
     return kong.response.exit(status_code, content)
   end
 end
