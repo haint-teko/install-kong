@@ -9,7 +9,7 @@ DecisionMakerHandler.VERSION = "1.0.0"
 DecisionMakerHandler.PRIORITY = 1010
 
 function DecisionMakerHandler:new()
-  DecisionMakerHandler.super.init_worker(self, "decision-maker")
+  DecisionMakerHandler.super.new(self, "decision-maker")
 end
 
 
