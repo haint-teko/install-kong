@@ -1,4 +1,5 @@
 local typedefs = require "kong.db.schema.typedefs"
+local ngx = ngx
 
 
 return {
