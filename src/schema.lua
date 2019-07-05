@@ -14,7 +14,15 @@ return {
             reference = "decision_makers",
             default   = ngx.null,
             on_delete = "cascade",
-          }, }
+          }, },
+          { timeout = {
+            type = "number",
+            default = 60000,
+          }, },
+          { keepalive = {
+            type = "number",
+            default  = 60000
+          }, },
     }, }, },
   },
 }
