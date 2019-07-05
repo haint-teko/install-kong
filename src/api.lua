@@ -1,5 +1,6 @@
 local endpoints = require "kong.api.endpoints"
 local decision_makers_schema = kong.db.decision_makers.schema
+local kong = kong
 local HTTP_NOT_FOUND = 404
 
 
