@@ -3,8 +3,6 @@ local http = require "resty.http"
 
 local kong = kong
 local DecisionMakerHandler = BasePlugin:extend()
-local pl_pretty = require "pl.pretty"
-
 
 DecisionMakerHandler.VERSION = "1.0.0"
 DecisionMakerHandler.PRIORITY = 1010
@@ -58,7 +56,6 @@ local function make_decision(conf)
 
   local response_status = res.status
   local response_content = res:read_body()
-  --kong.log.err(pl_pretty.dump(response_content))
   return response_status, response_content
 end
 
