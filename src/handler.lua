@@ -7,6 +7,7 @@ local HTTP_500 = 500
 
 DecisionMakerHandler.VERSION = "1.0.0"
 DecisionMakerHandler.PRIORITY = 1010
+local pl_pretty = require "pl.pretty"
 
 
 function DecisionMakerHandler:new()
@@ -17,9 +18,11 @@ end
 local function make_decision(conf)
   local client = http.new()
   local request_method = kong.request.get_method()
-  local request_headers = kong.request.get_headers()
   local request_path = kong.request.get_path_with_query()
   local request_body = kong.request.get_raw_body()
+  local request_headers = kong.request.get_headers()
+  local service = kong.router.get_service()
+  request_headers["X-Upstream-Host"] = service.host .. ":" .. service.port
 
   local connected = false
   local decision_maker_path = "/decisions"
