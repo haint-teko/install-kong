@@ -1,10 +1,9 @@
 local typedefs = require "kong.db.schema.typedefs"
 
-
 local name_type = typedefs.name
 name_type.required = true
 local scheme_type = typedefs.protocol
-scheme_type.default = "https"
+scheme_type.default = "http"
 local host_type = typedefs.host
 host_type.required = true
 local port_type = typedefs.port
