@@ -19,7 +19,7 @@ local function connect(client, host, port)
   local ok, err = client:connect(host, port)
   if not ok then
     local domain = host .. ":" .. port
-    kong.log.err("Could not connect to decision-maker service " .. domain ": " .. err)
+    kong.log.err("Could not connect to decision-maker service " .. domain ": ", err)
     return false
   end
   return true
@@ -70,7 +70,7 @@ local function make_decision(conf)
   }
 
   if not res then
-    kong.log.err("Could not receive any data from decision-maker service: " .. err)
+    kong.log.err("Could not receive any data from decision-maker service: ", err)
     return kong.response.exit(HTTP_500, { message = "An unexpected error occurred" })
   end
 
@@ -79,7 +79,7 @@ local function make_decision(conf)
 
   res, err = client:set_keepalive(conf.keepalive)
   if not res then
-    kong.log.err("Could not keepalive connection: " .. err)
+    kong.log.err("Could not keepalive connection: ", err)
   end
 
   return status_code, content
