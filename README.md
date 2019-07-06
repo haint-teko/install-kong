@@ -108,3 +108,77 @@ POST /decision-makers
 | port        | `integer` | The Decision-Maker server port. Defaults to `80`.                            |
 | path        | `string`  | The path to be used in the requests to the Decision-Maker server.            |
 | https       | `boolean` | Use of HTTPS to connect with the Decision-Maker server. Defaults to `false`. |
+
+*Response*
+
+```shell
+HTTP 201 Created
+```
+
+```shell
+{
+  "id": "b10f1a06-7168-4bc3-93ed-c572d3e29fba",
+  "created_at": 1562403472,
+  "name": "my-decision-maker",
+  "host": "example.com",
+  "port": 80,
+  "path": "/decisions",
+  "https": false
+}
+```
+
+- **List All Decision-Makers**
+
+```shell
+GET /decision-makers
+```
+
+*Response*
+
+```shell
+HTTP 200 OK
+```
+
+```shell
+{
+  "next": null,
+  "data": [
+    {
+      "id": "b10f1a06-7168-4bc3-93ed-c572d3e29fba",
+      "created_at": 1562403472,
+      "name": "my-decision-maker",
+      "host": "example.com",
+      "port": 80,
+      "path": "/decisions",
+      "https": false
+    }
+  ]
+}
+```
+
+- **Retrieve Decision-Maker**
+
+```shell
+GET /decision-makers/{name or id}
+```
+| ATTRIBUTES                   | TYPE      | DESCRIPTION                                                          |
+| ---------------------------- | --------- | -------------------------------------------------------------------- |
+| `name` or `id`. **required** | `string`  | The unique identifier or the name of the Decision-Maker to retrieve. |                                                     |
+
+*Response*
+
+```shell
+HTTP 200 OK
+```
+
+```shell
+{
+  "id": "b10f1a06-7168-4bc3-93ed-c572d3e29fba",
+  "created_at": 1562403472,
+  "name": "my-decision-maker",
+  "host": "example.com",
+  "port": 80,
+  "path": "/decisions",
+  "https": false
+}
+```
