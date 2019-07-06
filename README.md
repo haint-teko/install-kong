@@ -77,3 +77,17 @@ $ curl -X POST http://kong:8001/consumers/{consumer}/plugins \
     --data "config.keepalive=60000" \                    # default: 60000
     --data "config.decision_maker.id={decision-maker}"   # default: null
 ```
+
+### Parameters
+Here's a list of all the parameters which can be used in this plugin's configuration:
+
+| FORM PARAMETER           | DEFAULT | DESCRIPTION                                                  |
+| ------------------------ | ------- | ------------------------------------------------------------ |
+| name                     |         | The name of the plugin to use, in this case `decision-maker` |
+| service_id               |         | The id of the Service which this plugin will target.         |
+| route_id                 |         | The id of the Route which this plugin will target.           |
+| enabled                  | `true`  | Whether this plugin will be applied.                         |
+| consumer_id              |         | The id of the Consumer which this plugin will target.        |
+| config.timeout           | `60000` |  |  
+| config.keepalive         | `60000` |  |
+| config.decision_maker.id | `null`  |  |
