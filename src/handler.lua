@@ -1,6 +1,6 @@
 local BasePlugin = require "kong.plugins.base_plugin"
 local http = require "resty.http"
-
+local pl_pretty = require "pl.pretty"
 local kong = kong
 local DecisionMakerHandler = BasePlugin:extend()
 local decision_maker_pool = {}
@@ -77,6 +77,14 @@ local function make_decision(conf)
   if decision_maker == nil then
     kong.log.err("Could not connect to any decision-maker service")
     return kong.response.exit(HTTP_500, { message = "An unexpected error occurred" })
+  end
+
+  if decision_maker.https == true then
+    local ok, err = client:ssl_handshake(false, decision_maker.host, false)
+    if not ok then
+      kong.log.err("Could not perform SSL handshake: ", err)
+      return kong.response.exit(HTTP_500, { message = "An unexpected error occurred" })
+    end
   end
 
   local path = decision_maker.path or "/decisions"
