@@ -42,3 +42,14 @@ $ curl -i -X POST http://kong:8001/plugins \
     --data "name=decision-maker"
 ```
 
+- **Enable the plugin on a Service**
+
+Configure this plugin on a Service by making the following request:
+
+```shell
+$ curl -X POST http://kong:8001/services/{service}/plugins \
+    --data "name=decision-maker"  \
+    --data "config.timeout=60000" \                         # default: 60000
+    --data "config.keepalive=60000" \                       # default: 60000
+    --data "config.decision_maker.id={decision_maker_id}"   # default: null
+```
