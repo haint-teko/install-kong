@@ -5,7 +5,7 @@ return {
         "id"           UUID                         PRIMARY KEY,
         "name"         TEXT                         UNIQUE,
         "created_at"   TIMESTAMP WITHOUT TIME ZONE  DEFAULT (CURRENT_TIMESTAMP(0) AT TIME ZONE 'UTC'),
-        "scheme"       TEXT,
+        "https"        BOOLEAN,
         "host"         TEXT,
         "port"         INTEGER,
         "path"         TEXT
@@ -26,7 +26,7 @@ return {
         id          uuid PRIMARY KEY,
         name        text,
         created_at  timestamp,
-        scheme      text,
+        https       boolean,
         host        text,
         port        bigint,
         path        text
