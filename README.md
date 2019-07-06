@@ -91,3 +91,20 @@ Here's a list of all the parameters which can be used in this plugin's configura
 | config.timeout           | `60000` | Timeout in milliseconds before aborting a connection to the Decision-Maker server.                            |  
 | config.keepalive         | `60000` | Time in milliseconds for which an idle connection to the Decision-Maker server will live before being closed. |
 | config.decision_maker.id | `null`  | The id of the Decision-Maker server which this plugin will ask for request's authorization                    |
+
+### Admin API
+- **Create Decision-Maker**
+
+```shell
+POST /decision-makers
+```
+
+*Request Body*
+
+| ATTRIBUTES  | TYPE      | DESCRIPTION                                                                  |
+| ----------- | --------- | ---------------------------------------------------------------------------- |
+| name        | `string`  | The Decision-Maker name.                                                     |
+| host        | `string`  | The host of the Decision-Maker server.                                       |
+| port        | `integer` | The Decision-Maker server port. Defaults to `80`.                            |
+| path        | `string`  | The path to be used in the requests to the Decision-Maker server.            |
+| https       | `boolean` | Use of HTTPS to connect with the Decision-Maker server. Defaults to `false`. |
