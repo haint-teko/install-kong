@@ -1,8 +1,9 @@
 local BasePlugin = require "kong.plugins.base_plugin"
 local http = require "resty.http"
-
+local pl_pretty = require "pl.pretty"
 local kong = kong
 local DecisionMakerHandler = BasePlugin:extend()
+local decision_maker_pool = {}
 local HTTP_500 = 500
 
 DecisionMakerHandler.VERSION = "1.0.0"
@@ -12,6 +13,22 @@ function DecisionMakerHandler:new()
   DecisionMakerHandler.super.new(self, "decision-maker")
 end
 
+function DecisionMakerHandler:init_worker()
+  DecisionMakerHandler.super.init_worker(self)
+  for decision_maker in kong.db.decision_makers:each() do
+    decision_maker_pool[decision_maker.id] = decision_maker
+  end
+
+  kong.worker_events.register(function (data)
+    local entity = data.entity
+    if data.operation == "create" or data.operation == "update" then
+      decision_maker_pool[entity.id] = entity
+    end
+    if data.operation == "delete" then
+      decision_maker_pool[entity.id] = nil
+    end
+  end, "crud", "decision_makers")
+end
 
 local function connect(client, host, port)
   local ok, err = client:connect(host, port)
@@ -22,7 +39,6 @@ local function connect(client, host, port)
   end
   return true
 end
-
 
 local function make_decision(conf)
   local request_method = kong.request.get_method()
@@ -83,7 +99,6 @@ local function make_decision(conf)
   return status_code, content
 end
 
-
 function DecisionMakerHandler:access(conf)
   DecisionMakerHandler.super.access(self)
   local status_code, content = make_decision(conf)
@@ -91,6 +106,5 @@ function DecisionMakerHandler:access(conf)
     return kong.response.exit(status_code, content)
   end
 end
-
 
 return DecisionMakerHandler
