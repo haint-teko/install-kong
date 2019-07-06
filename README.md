@@ -49,7 +49,31 @@ Configure this plugin on a Service by making the following request:
 ```shell
 $ curl -X POST http://kong:8001/services/{service}/plugins \
     --data "name=decision-maker"  \
-    --data "config.timeout=60000" \                         # default: 60000
-    --data "config.keepalive=60000" \                       # default: 60000
-    --data "config.decision_maker.id={decision_maker_id}"   # default: null
+    --data "config.timeout=60000" \                      # default: 60000
+    --data "config.keepalive=60000" \                    # default: 60000
+    --data "config.decision_maker.id={decision-maker}"   # default: null
+```
+
+- **Enable the plugin on a Route**
+
+Configure this plugin on a Route by making the following request:
+
+```shell
+$ curl -X POST http://kong:8001/routes/{route}/plugins \
+    --data "name=decision-maker"  \
+    --data "config.timeout=60000" \                      # default: 60000
+    --data "config.keepalive=60000" \                    # default: 60000
+    --data "config.decision_maker.id={decision-maker}"   # default: null
+```
+
+- **Enable the plugin on a Consumer**
+
+Configure this plugin on a Consumer by making the following request:
+
+```shell
+$ curl -X POST http://kong:8001/consumers/{consumer}/plugins \
+    --data "name=decision-maker"  \
+    --data "config.timeout=60000" \                      # default: 60000
+    --data "config.keepalive=60000" \                    # default: 60000
+    --data "config.decision_maker.id={decision-maker}"   # default: null
 ```
