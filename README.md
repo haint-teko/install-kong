@@ -81,13 +81,13 @@ $ curl -X POST http://kong:8001/consumers/{consumer}/plugins \
 ### Parameters
 Here's a list of all the parameters which can be used in this plugin's configuration:
 
-| FORM PARAMETER           | DEFAULT | DESCRIPTION                                                  |
-| ------------------------ | ------- | ------------------------------------------------------------ |
-| name                     |         | The name of the plugin to use, in this case `decision-maker` |
-| service_id               |         | The id of the Service which this plugin will target.         |
-| route_id                 |         | The id of the Route which this plugin will target.           |
-| enabled                  | `true`  | Whether this plugin will be applied.                         |
-| consumer_id              |         | The id of the Consumer which this plugin will target.        |
-| config.timeout           | `60000` |  |  
-| config.keepalive         | `60000` |  |
-| config.decision_maker.id | `null`  |  |
+| FORM PARAMETER           | DEFAULT | DESCRIPTION                                                                                                   |
+| ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------- |
+| name                     |         | The name of the plugin to use, in this case `decision-maker`                                                  |
+| service_id               |         | The id of the Service which this plugin will target.                                                          |
+| route_id                 |         | The id of the Route which this plugin will target.                                                            |
+| enabled                  | `true`  | Whether this plugin will be applied.                                                                          |
+| consumer_id              |         | The id of the Consumer which this plugin will target.                                                         |
+| config.timeout           | `60000` | Timeout in milliseconds before aborting a connection to the Decision-Maker server.                            |  
+| config.keepalive         | `60000` | Time in milliseconds for which an idle connection to the Decision-Maker server will live before being closed. |
+| config.decision_maker.id | `null`  | The id of the Decision-Maker server which this plugin will ask for request's authorization                    |
