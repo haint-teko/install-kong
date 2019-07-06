@@ -228,7 +228,7 @@ DELETE /decision-makers/{name or id}
 
 | ATTRIBUTES                   | TYPE      | DESCRIPTION                                                        |
 | ---------------------------- | --------- | ------------------------------------------------------------------ |
-| `name` or `id`. **required** | `string`  | The unique identifier or the name of the Decision-Maker to update. |
+| `name` or `id`. **required** | `string`  | The unique identifier or the name of the Decision-Maker to delete. |
 
 *Response*
 
