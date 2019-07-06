@@ -161,6 +161,7 @@ HTTP 200 OK
 ```shell
 GET /decision-makers/{name or id}
 ```
+
 | ATTRIBUTES                   | TYPE      | DESCRIPTION                                                          |
 | ---------------------------- | --------- | -------------------------------------------------------------------- |
 | `name` or `id`. **required** | `string`  | The unique identifier or the name of the Decision-Maker to retrieve. |                                                     |
@@ -181,4 +182,56 @@ HTTP 200 OK
   "path": "/decisions",
   "https": false
 }
+```
+
+- **Update Decision-Maker**
+
+```shell
+PATCH /decision-makers/{name or id}
+```
+
+| ATTRIBUTES                   | TYPE      | DESCRIPTION                                                        |
+| ---------------------------- | --------- | ------------------------------------------------------------------ |
+| `name` or `id`. **required** | `string`  | The unique identifier or the name of the Decision-Maker to update. |
+
+*Request Body*
+
+| ATTRIBUTES  | TYPE      | DESCRIPTION                                                                  |
+| ----------- | --------- | ---------------------------------------------------------------------------- |
+| name        | `string`  | The Decision-Maker name.                                                     |
+| host        | `string`  | The host of the Decision-Maker server.                                       |
+| port        | `integer` | The Decision-Maker server port. Defaults to `80`.                            |
+| path        | `string`  | The path to be used in the requests to the Decision-Maker server.            |
+| https       | `boolean` | Use of HTTPS to connect with the Decision-Maker server. Defaults to `false`. |
+
+```shell
+HTTP 200 OK
+```
+
+```shell
+{
+  "id": "b10f1a06-7168-4bc3-93ed-c572d3e29fba",
+  "created_at": 1562403472,
+  "name": "my-decision-maker",
+  "host": "example.com",
+  "port": 80,
+  "path": "/decisions",
+  "https": false
+}
+```
+
+- **Delete Decision-Maker**
+
+```shell
+DELETE /decision-makers/{name or id}
+```
+
+| ATTRIBUTES                   | TYPE      | DESCRIPTION                                                        |
+| ---------------------------- | --------- | ------------------------------------------------------------------ |
+| `name` or `id`. **required** | `string`  | The unique identifier or the name of the Decision-Maker to update. |
+
+*Response*
+
+```shell
+HTTP 204 No Content
 ```
