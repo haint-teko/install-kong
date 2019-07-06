@@ -1,6 +1,6 @@
 local BasePlugin = require "kong.plugins.base_plugin"
 local http = require "resty.http"
-local pl_pretty = require "pl.pretty"
+
 local kong = kong
 local DecisionMakerHandler = BasePlugin:extend()
 local decision_maker_pool = {}
@@ -40,6 +40,11 @@ local function connect(client, host, port)
   return true
 end
 
+local function load_decision_maker(key)
+  local decision_makers = decision_maker_pool
+  return decision_makers[key]
+end
+
 local function make_decision(conf)
   local request_method = kong.request.get_method()
   local request_path = kong.request.get_path_with_query()
@@ -52,15 +57,15 @@ local function make_decision(conf)
 
   local decision_maker
   if conf.decision_maker ~= nil then
-    decision_maker = kong.db.decision_makers:select(conf.decision_maker)
-    local ok = connect(client, decision_maker.host, decision_maker.port)
-    if not ok then
-      decision_maker = nil
+    decision_maker = load_decision_maker(conf.decision_maker.id)
+    if decision_maker ~= nil then
+      local ok = connect(client, decision_maker.host, decision_maker.port)
+      if not ok then decision_maker = nil end
     end
   end
 
   if conf.decision_maker == nil or decision_maker == nil then
-    for another in kong.db.decision_makers:each() do
+    for _, another in pairs(decision_maker_pool) do
       local ok = connect(client, another.host, another.port)
       if ok then
         decision_maker = another
