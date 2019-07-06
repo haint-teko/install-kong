@@ -1,6 +1,6 @@
 local BasePlugin = require "kong.plugins.base_plugin"
 local http = require "resty.http"
-local pl_pretty = require "pl.pretty"
+
 local kong = kong
 local DecisionMakerHandler = BasePlugin:extend()
 local decision_maker_pool = {}
