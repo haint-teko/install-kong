@@ -97,6 +97,194 @@ http {
         keepalive ${{UPSTREAM_KEEPALIVE}};
 > end
     }
+
+    server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        # injected nginx_proxy_* directives
+> for _, el in ipairs(nginx_proxy_directives) do
+        $(el.name) $(el.value);
+> end
+        return 301 https://$server_name$request_uri;
+    }
+
+    server {
+> for i = 1, #proxy_listeners do
+        listen $(proxy_listeners[i].listener);
+> end
+        # injected nginx_proxy_* directives
+> for _, el in ipairs(nginx_proxy_directives) do
+        $(el.name) $(el.value);
+> end
+
+        error_page 400 404 408 411 412 413 414 417 494 /kong_error_handler;
+        error_page 500 502 503 504 /kong_error_handler;
+
+        access_log ${{PROXY_ACCESS_LOG}};
+        error_log ${{PROXY_ERROR_LOG}} ${{LOG_LEVEL}};
+
+        client_body_buffer_size ${{CLIENT_BODY_BUFFER_SIZE}};
+
+> if proxy_ssl_enabled then
+        ssl_certificate ${{SSL_CERT}};
+        ssl_certificate_key ${{SSL_CERT_KEY}};
+
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+        ssl_session_tickets off;
+
+        ssl_prefer_server_ciphers on;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ${{SSL_CIPHERS}};
+        ssl_certificate_by_lua_block {
+            Kong.ssl_certificate()
+        }
+
+        resolver 8.8.8.8 8.8.4.4;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        ssl_trusted_certificate ${{SSL_CERT}};
+
+        add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+> end
+
+        real_ip_header     ${{REAL_IP_HEADER}};
+        real_ip_recursive  ${{REAL_IP_RECURSIVE}};
+> for i = 1, #trusted_ips do
+        set_real_ip_from   $(trusted_ips[i]);
+> end
+> if client_ssl then
+        proxy_ssl_certificate ${{CLIENT_SSL_CERT}};
+        proxy_ssl_certificate_key ${{CLIENT_SSL_CERT_KEY}};
+> end
+
+        location / {
+            default_type                     '';
+
+            set $ctx_ref                     '';
+            set $upstream_te                 '';
+            set $upstream_host               '';
+            set $upstream_upgrade            '';
+            set $upstream_connection         '';
+            set $upstream_scheme             '';
+            set $upstream_uri                '';
+            set $upstream_x_forwarded_for    '';
+            set $upstream_x_forwarded_proto  '';
+            set $upstream_x_forwarded_host   '';
+            set $upstream_x_forwarded_port   '';
+
+            rewrite_by_lua_block {
+                Kong.rewrite()
+            }
+
+            access_by_lua_block {
+                Kong.access()
+            }
+
+            proxy_http_version 1.1;
+            proxy_set_header   TE                $upstream_te;
+            proxy_set_header   Host              $upstream_host;
+            proxy_set_header   Upgrade           $upstream_upgrade;
+            proxy_set_header   Connection        $upstream_connection;
+            proxy_set_header   X-Forwarded-For   $upstream_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto $upstream_x_forwarded_proto;
+            proxy_set_header   X-Forwarded-Host  $upstream_x_forwarded_host;
+            proxy_set_header   X-Forwarded-Port  $upstream_x_forwarded_port;
+            proxy_set_header   X-Real-IP         $remote_addr;
+            proxy_pass_header  Server;
+            proxy_pass_header  Date;
+            proxy_ssl_name     $upstream_host;
+            proxy_pass         $upstream_scheme://kong_upstream$upstream_uri;
+
+            header_filter_by_lua_block {
+                Kong.header_filter()
+            }
+
+            body_filter_by_lua_block {
+                Kong.body_filter()
+            }
+
+            log_by_lua_block {
+                Kong.log()
+            }
+        }
+
+        location = /kong_error_handler {
+            internal;
+            uninitialized_variable_warn off;
+
+            content_by_lua_block {
+                Kong.handle_error()
+            }
+
+            header_filter_by_lua_block {
+                Kong.header_filter()
+            }
+
+            body_filter_by_lua_block {
+                Kong.body_filter()
+            }
+
+            log_by_lua_block {
+                Kong.log()
+            }
+        }
+    }
+> end
+
+> if #admin_listeners > 0 then
+    server {
+> for i = 1, #admin_listeners do
+        listen $(admin_listeners[i].listener);
+> end
+        # injected nginx_admin_* directives
+> for _, el in ipairs(nginx_admin_directives) do
+        $(el.name) $(el.value);
+> end
+
+        access_log ${{ADMIN_ACCESS_LOG}};
+        error_log ${{ADMIN_ERROR_LOG}} ${{LOG_LEVEL}};
+
+        client_max_body_size 10m;
+        client_body_buffer_size 10m;
+
+> if admin_ssl_enabled then
+        ssl_certificate ${{ADMIN_SSL_CERT}};
+        ssl_certificate_key ${{ADMIN_SSL_CERT_KEY}};
+
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+        ssl_session_tickets off;
+
+        ssl_prefer_server_ciphers on;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ${{SSL_CIPHERS}};
+
+        resolver 8.8.8.8 8.8.4.4;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        ssl_trusted_certificate ${{ADMIN_SSL_CERT}};
+
+        add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+> end
+
+        location / {
+            default_type application/json;
+            content_by_lua_block {
+                Kong.serve_admin_api()
+            }
+        }
+
+        location /nginx_status {
+            internal;
+            access_log off;
+            stub_status;
+        }
+
+        location /robots.txt {
+            return 200 'User-agent: *\nDisallow: /';
+        }
+    }
 > end
 }
 
