@@ -85,6 +85,19 @@ http {
     init_worker_by_lua_block {
         Kong.init_worker()
     }
+
+> if #proxy_listeners > 0 then
+    upstream kong_upstream {
+        server 0.0.0.1;
+        balancer_by_lua_block {
+            Kong.balancer()
+        }
+
+> if upstream_keepalive > 0 then
+        keepalive ${{UPSTREAM_KEEPALIVE}};
+> end
+    }
+> end
 }
 
 
