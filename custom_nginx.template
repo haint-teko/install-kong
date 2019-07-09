@@ -1,0 +1,90 @@
+> if nginx_user then
+user ${{NGINX_USER}};
+> end
+
+worker_processes ${{NGINX_WORKER_PROCESSES}};
+daemon ${{NGINX_DAEMON}};
+
+pid pids/nginx.pid;
+error_log ${{PROXY_ERROR_LOG}} ${{LOG_LEVEL}};
+
+> if nginx_optimizations then
+worker_rlimit_nofile ${{WORKER_RLIMIT}};
+> end
+
+events {
+> if nginx_optimizations then
+    worker_connections ${{WORKER_CONNECTIONS}};
+    multi_accept on;
+> end
+}
+
+http {
+    charset UTF-8;
+
+> if anonymous_reports then
+    ${{SYSLOG_REPORTS}}
+> end
+
+    error_log ${{PROXY_ERROR_LOG}} ${{LOG_LEVEL}};
+
+> if nginx_optimizations then
+>-- send_timeout 60s;          # default value
+>-- keepalive_timeout 75s;     # default value
+>-- client_body_timeout 60s;   # default value
+>-- client_header_timeout 60s; # default value
+>-- tcp_nopush on;             # disabled until benchmarked
+>-- proxy_buffer_size 128k;    # disabled until benchmarked
+>-- proxy_buffers 4 256k;      # disabled until benchmarked
+>-- proxy_busy_buffers_size 256k; # disabled until benchmarked
+>-- reset_timedout_connection on; # disabled until benchmarked
+> end
+
+    client_max_body_size ${{CLIENT_MAX_BODY_SIZE}};
+    proxy_ssl_server_name on;
+    underscores_in_headers on;
+
+    lua_package_path '${{LUA_PACKAGE_PATH}};;';
+    lua_package_cpath '${{LUA_PACKAGE_CPATH}};;';
+    lua_socket_pool_size ${{LUA_SOCKET_POOL_SIZE}};
+    lua_max_running_timers 4096;
+    lua_max_pending_timers 16384;
+    lua_shared_dict kong                5m;
+    lua_shared_dict kong_db_cache       ${{MEM_CACHE_SIZE}};
+> if database == "off" then
+    lua_shared_dict kong_db_cache_2     ${{MEM_CACHE_SIZE}};
+> end
+    lua_shared_dict kong_db_cache_miss   12m;
+> if database == "off" then
+    lua_shared_dict kong_db_cache_miss_2 12m;
+> end
+    lua_shared_dict kong_locks          8m;
+    lua_shared_dict kong_process_events 5m;
+    lua_shared_dict kong_cluster_events 5m;
+    lua_shared_dict kong_healthchecks   5m;
+    lua_shared_dict kong_rate_limiting_counters 12m;
+> if database == "cassandra" then
+    lua_shared_dict kong_cassandra      5m;
+> end
+    lua_socket_log_errors off;
+> if lua_ssl_trusted_certificate then
+    lua_ssl_trusted_certificate '${{LUA_SSL_TRUSTED_CERTIFICATE}}';
+> end
+    lua_ssl_verify_depth ${{LUA_SSL_VERIFY_DEPTH}};
+
+    # injected nginx_http_* directives
+> for _, el in ipairs(nginx_http_directives) do
+    $(el.name) $(el.value);
+> end
+
+    init_by_lua_block {
+        Kong = require 'kong'
+        Kong.init()
+    }
+
+    init_worker_by_lua_block {
+        Kong.init_worker()
+    }
+}
+
+
