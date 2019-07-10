@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 readonly LIMITS_CONFIG_FILE="/etc/security/limits.conf"
-readonly KONG_CONFIG_FILE="kong.conf"
 
 
 function config_limits() {
@@ -42,6 +41,7 @@ function prepare_env() {
 
   source .env
   cp kong.conf.default kong.conf
+  KONG_CONFIG_FILE="kong.conf"
 
   if [[ -n "${PROXY_SERVER_NAME}" ]]; then
     sed  -i "s/^\s*nginx_proxy_server_name\s*=.*$/nginx_proxy_server_name = ${PROXY_SERVER_NAME}/" ${KONG_CONFIG_FILE}
@@ -92,16 +92,13 @@ function install_kong() {
   apt-get install -y openssl libpcre3 procps perl
   dpkg -i kong-1.2.1.*.deb
 
-  prepare_env
+  cp kong.service /etc/systemd/system
+  chmod 777 /etc/systemd/system/kong.service
 
   cp kong.conf /etc/kong && chmod 644 /etc/kong/kong.conf
   cp custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
-
-  cp kong.service /etc/systemd/system
-  chmod 777 /etc/systemd/system/kong.service
-  systemctl enable kong
 }
 
-install_kong
+prepare_env
 
 
