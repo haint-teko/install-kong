@@ -105,5 +105,3 @@ function install_kong() {
 }
 
 install_kong
-
-
