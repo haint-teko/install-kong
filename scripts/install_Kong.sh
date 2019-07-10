@@ -94,11 +94,11 @@ function install_kong() {
   apt-get install -y openssl libpcre3 procps perl
   dpkg -i kong-1.2.1.*.deb
 
-  cp kong.service /etc/systemd/system
-  chmod 777 /etc/systemd/system/kong.service
-
   mv kong.conf /etc/kong/kong.conf && chmod 644 /etc/kong/kong.conf
-  cp custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
+  cp ./templates/custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
+
+  cp ./templates/kong.service /etc/systemd/system
+  chmod 777 /etc/systemd/system/kong.service
 
   # install decision-maker plugin
   cd ./plugins/decision-maker && luarocks make && cd ../..
