@@ -39,7 +39,7 @@ function prepare_env() {
   touch -f /var/log/kong/admin_access.log /var/log/kong/admin_error.log
   chmod -R g-wx,o-rwx /var/log/kong/*
 
-  source .env
+  source ../.env
   cp kong.conf.default kong.conf
   KONG_CONFIG_FILE="kong.conf"
 
