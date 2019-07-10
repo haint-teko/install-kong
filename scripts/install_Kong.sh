@@ -92,11 +92,7 @@ function install_kong() {
   prepare_env
 
   apt-get install -y openssl libpcre3 procps perl
-  pid=$!
-  wait ${pid}
   dpkg -i ./packages/kong-1.2.1.*.deb
-  pid=$!
-  wait ${pid}
 
   mv kong.conf /etc/kong/kong.conf && chmod 644 /etc/kong/kong.conf
   cp ./templates/custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
@@ -110,10 +106,4 @@ function install_kong() {
   systemctl start kong
 }
 
-function install_plugin() {
-  # install decision-maker plugin
-  cd ./plugins/decision-maker && luarocks make && cd ../..
-}
-
 install_kong
-install_plugin
