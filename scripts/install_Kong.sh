@@ -39,8 +39,7 @@ function prepare_env() {
   touch -f /var/log/kong/admin_access.log /var/log/kong/admin_error.log
   chmod -R g-wx,o-rwx /var/log/kong/*
 
-  source ../.env
-  cp kong.conf.default kong.conf
+  cp ./templates/kong.conf.default kong.conf
   KONG_CONFIG_FILE="kong.conf"
 
   if [[ -n "${PROXY_SERVER_NAME}" ]]; then
@@ -89,19 +88,22 @@ function prepare_env() {
 }
 
 function install_kong() {
+  config_limits
+  prepare_env
+
   apt-get install -y openssl libpcre3 procps perl
   dpkg -i kong-1.2.1.*.deb
 
   cp kong.service /etc/systemd/system
   chmod 777 /etc/systemd/system/kong.service
 
-  cp kong.conf /etc/kong && chmod 644 /etc/kong/kong.conf
+  mv kong.conf /etc/kong/kong.conf && chmod 644 /etc/kong/kong.conf
   cp custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
 
   # install decision-maker plugin
-  cd ./decision-maker && luarocks make && cd ..
+  cd ./plugins/decision-maker && luarocks make && cd ../..
 }
 
-prepare_env
+install_kong
 
 
