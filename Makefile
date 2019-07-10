@@ -1,6 +1,8 @@
 # Makefile
 
 SHELL := /bin/bash
+include .env
+export $(shell sed 's/=.*//' .env)
 
 install:
-	      source .env && ./scripts/install_Kong.sh
+	      ./scripts/install_Kong.sh
