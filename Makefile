@@ -5,6 +5,7 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 install:
-	      ./scripts/install_Kong.sh
-plugins:
-        ./scripts/decision_maker.sh
+	bash ./scripts/install_Kong.sh
+
+kong-plugins:
+	bash ./scripts/decision_maker.sh
