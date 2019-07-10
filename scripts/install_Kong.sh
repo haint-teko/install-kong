@@ -92,7 +92,7 @@ function install_kong() {
   prepare_env
 
   apt-get install -y openssl libpcre3 procps perl
-  dpkg -i kong-1.2.1.*.deb
+  dpkg -i ./packages/kong-1.2.1.*.deb
 
   mv kong.conf /etc/kong/kong.conf && chmod 644 /etc/kong/kong.conf
   cp ./templates/custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
