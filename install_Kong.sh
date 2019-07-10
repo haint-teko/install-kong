@@ -31,6 +31,63 @@ function config_limits() {
   done
 }
 
+function prepare_env() {
+  if [[ ! -d /var/log/kong ]]; then
+    mkdir /var/log/kong
+  fi
+  touch -f /var/log/kong/proxy_access.log /var/log/kong/proxy_error.log
+  touch -f /var/log/kong/admin_access.log /var/log/kong/admin_error.log
+  chmod -R g-wx,o-rwx /var/log/kong/*
+
+  source .env
+  cp kong.conf.default kong.conf
+  KONG_CONFIG_FILE="kong.conf"
+
+  if [[ -n "${PROXY_SERVER_NAME}" ]]; then
+    sed  -i "s/^\s*nginx_proxy_server_name\s*=.*$/nginx_proxy_server_name = ${PROXY_SERVER_NAME}/" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${PROXY_SSL_CERT}" ]]; then
+    sed -i "s|^\s*#\s*ssl_cert\s*=.*$|ssl_cert = ${PROXY_SSL_CERT}|" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${PROXY_SSL_CERT_KEY}" ]]; then
+    sed -i "s|^\s*#\s*ssl_cert_key\s*=.*$|ssl_cert_key = ${PROXY_SSL_CERT_KEY}|" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${ADMIN_SERVER_NAME}" ]]; then
+    sed  -i "s/^\s*nginx_admin_server_name\s*=.*$/nginx_admin_server_name = ${ADMIN_SERVER_NAME}/" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${ADMIN_SSL_CERT}" ]]; then
+    sed -i "s|^\s*#\s*admin_ssl_cert\s*=.*$|admin_ssl_cert = ${ADMIN_SSL_CERT}|" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${ADMIN_SSL_CERT_KEY}" ]]; then
+    sed -i "s|^\s*#\s*admin_ssl_cert_key\s*=.*$|admin_ssl_cert_key = ${ADMIN_SSL_CERT_KEY}|" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${POSTGRESQL_HOST}" ]]; then
+    sed -i "s/^\s*pg_host\s*=.*$/pg_host = ${POSTGRESQL_HOST}/" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${POSTGRESQL_PORT}" ]]; then
+    sed -i "s/^\s*pg_port\s*=.*$/pg_port = ${POSTGRESQL_PORT}/" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${POSTGRESQL_USER}" ]]; then
+    sed -i "s/^\s*pg_user\s*=.*$/pg_user = ${POSTGRESQL_USER}/" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${POSTGRESQL_PASSWORD}" ]]; then
+    sed -i "s/^\s*#\s*pg_password\s*=.*$/pg_password = ${POSTGRESQL_PASSWORD}/" ${KONG_CONFIG_FILE}
+  fi
+
+  if [[ -n "${POSTGRESQL_DATABASE}" ]]; then
+    sed -i "s/^\s*pg_database\s*=.*$/pg_database = ${POSTGRESQL_DATABASE}/" ${KONG_CONFIG_FILE}
+  fi
+}
+
 function install_kong() {
   apt-get install -y openssl libpcre3 procps perl
   dpkg -i kong-1.2.1.*.deb
@@ -41,5 +98,7 @@ function install_kong() {
   cp kong.conf /etc/kong && chmod 644 /etc/kong/kong.conf
   cp custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
 }
+
+prepare_env
 
 
