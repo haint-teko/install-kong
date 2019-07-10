@@ -105,12 +105,15 @@ function install_kong() {
   chmod 777 /etc/systemd/system/kong.service
   systemctl enable kong
 
-  # install decision-maker plugin
-  cd ./plugins/decision-maker && luarocks make && cd ../..
-
   # bootstrap database
   /usr/local/bin/kong migrations bootstrap
   systemctl start kong
 }
 
+function install_plugin() {
+  # install decision-maker plugin
+  cd ./plugins/decision-maker && luarocks make && cd ../..
+}
+
 install_kong
+install_plugin
