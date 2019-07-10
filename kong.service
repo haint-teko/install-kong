@@ -6,8 +6,8 @@ After=syslog.target network.target
 User=root
 Group=root
 Type=forking
-ExecStart=/usr/local/bin/kong start
-ExecReload=/usr/local/bin/kong reload
+ExecStart=/usr/local/bin/kong start --conf /etc/kong/kong.conf --nginx-conf /etc/kong/custom_nginx.template
+ExecReload=/usr/local/bin/kong reload --conf /etc/kong/kong.conf --nginx-conf /etc/kong/custom_nginx.template
 ExecStop=/usr/local/bin/kong stop
 
 [Install]
