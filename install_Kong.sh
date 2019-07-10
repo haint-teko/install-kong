@@ -97,6 +97,9 @@ function install_kong() {
 
   cp kong.conf /etc/kong && chmod 644 /etc/kong/kong.conf
   cp custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
+
+  # install decision-maker plugin
+  cd ./decision-maker && luarocks make && cd ..
 }
 
 prepare_env
