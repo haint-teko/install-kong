@@ -21,7 +21,7 @@ POSTGRESQL_DATABASE=kong        # The database name to connect to.
 
 ### Install Kong
 
-**Note**: Ensure the connection between Kong server and PostgresSQL server is success.
+**Note: Ensure the connection between Kong server and PostgresSQL server is success.**
 
 Run the following command to install Kong API gateway:
 
@@ -29,7 +29,7 @@ Run the following command to install Kong API gateway:
 $ sudo make install
 ```
 
-**Note**: You should reboot server after installing Kong successfully.
+**Note: You should reboot server after installing Kong successfully.**
 
 ### Install Decision-Maker plugin
 
@@ -57,5 +57,5 @@ $ sudo systemctl reload kong
 $ sudo systemctl status kong
 ```
 
-**Note**: You must start/stop/reload/restart Kong via Linux systemctl.
+**Note: You must start/stop/reload/restart Kong via Linux systemctl.**
 
