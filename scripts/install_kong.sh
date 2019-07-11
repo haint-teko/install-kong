@@ -92,7 +92,7 @@ function install_kong() {
   apt-get install -y openssl libpcre3 procps perl
   dpkg -i ./packages/kong-1.2.1.*.deb
 
-  STATUS=$(kong health > /dev/null 2>&1)
+  STATUS=$(/usr/local/bin/kong health > /dev/null 2>&1)
   if [[ ${STATUS} != *"not running"* ]]; then
     /usr/local/bin/kong stop
   fi
