@@ -97,11 +97,10 @@ function install_kong() {
 
   cp ./templates/kong.service /etc/systemd/system
   chmod 777 /etc/systemd/system/kong.service
-  systemctl enable kong
 
   # bootstrap database
   /usr/local/bin/kong migrations bootstrap
-  systemctl restart kong
+  systemctl stop kong > /dev/null 2>&1 && systemctl start kong && systemctl enable kong
 }
 
 install_kong
