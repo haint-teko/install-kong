@@ -35,8 +35,6 @@ function prepare_env() {
   if [[ ! -d /var/log/kong ]]; then
     mkdir /var/log/kong
   fi
-  touch -f /var/log/kong/proxy_access.log /var/log/kong/proxy_error.log
-  touch -f /var/log/kong/admin_access.log /var/log/kong/admin_error.log
   chmod -R g-wx,o-rwx /var/log/kong/*
 
   cp ./templates/kong.conf.default kong.conf
@@ -103,7 +101,7 @@ function install_kong() {
 
   # bootstrap database
   /usr/local/bin/kong migrations bootstrap
-  systemctl start kong
+  systemctl restart kong
 }
 
 install_kong
