@@ -29,7 +29,7 @@ Run the following command to install Kong API gateway:
 $ sudo make install
 ```
 
-**Note**: You should reboot the server after installing Kong successfully.
+**Note**: You should reboot server after installing Kong successfully.
 
 ### Install Decision-Maker plugin
 
