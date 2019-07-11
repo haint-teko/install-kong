@@ -145,7 +145,7 @@ http {
         ssl_stapling_verify on;
         ssl_trusted_certificate ${{SSL_CERT}};
 
-        add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+        # add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
 > end
 
         real_ip_header     ${{REAL_IP_HEADER}};
@@ -265,7 +265,7 @@ http {
         ssl_stapling_verify on;
         ssl_trusted_certificate ${{ADMIN_SSL_CERT}};
 
-        add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+        # add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
 > end
 
         location / {
