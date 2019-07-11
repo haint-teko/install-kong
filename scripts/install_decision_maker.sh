@@ -11,6 +11,6 @@ cd ../..
 
 PLUGINS=$(egrep "^\s*plugins" ${KONG_CONFIG_FILE})
 sed -i "s|^\s*plugins\s*=\s*.*$|${PLUGINS}, ${PLUGIN_NAME}|" ${KONG_CONFIG_FILE}
-systemctl reload kong
+systemctl restart kong
 
 /usr/local/bin/kong migrations up --conf ${KONG_CONFIG_FILE}
