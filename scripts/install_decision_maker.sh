@@ -2,14 +2,15 @@
 # install decision-maker plugin
 
 PLUGIN_NAME="decision-maker"
+KONG_CONFIG_FILE="/etc/kong/kong.conf"
 
 cd ./plugins/decision-maker
 luarocks make > /dev/null 2>&1
 luarocks make
 cd ../..
 
-PLUGINS=$(egrep "^\s*plugins" /etc/kong/kong.conf)
-sed -i "s|^\s*plugins\s*=\s*.*$|${PLUGINS}, ${PLUGIN_NAME}|"
+PLUGINS=$(egrep "^\s*plugins" ${KONG_CONFIG_FILE})
+sed -i "s|^\s*plugins\s*=\s*.*$|${PLUGINS}, ${PLUGIN_NAME}|" ${KONG_CONFIG_FILE}
 systemctl reload kong
 
-/usr/local/bin/kong migrations bootstrap up --conf /etc/kong/kong.conf
+/usr/local/bin/kong migrations bootstrap up --conf ${KONG_CONFIG_FILE}
