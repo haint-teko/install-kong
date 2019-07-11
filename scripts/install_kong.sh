@@ -91,7 +91,11 @@ function install_kong() {
 
   apt-get install -y openssl libpcre3 procps perl
   dpkg -i ./packages/kong-1.2.1.*.deb
-  /usr/local/bin/kong stop
+
+  STATUS=$(kong health > /dev/null 2>&1)
+  if [[ ${STATUS} != *"not running"* ]]; then
+    /usr/local/bin/kong stop
+  fi
 
   mv kong.conf /etc/kong/kong.conf && chmod 644 /etc/kong/kong.conf
   cp ./templates/custom_nginx.template /etc/kong && chmod 644 /etc/kong/custom_nginx.template
@@ -102,7 +106,7 @@ function install_kong() {
 
   # bootstrap database
   /usr/local/bin/kong migrations bootstrap
-  systemctl start kong
+  systemctl restart kong
 }
 
 install_kong
