@@ -68,7 +68,7 @@ nginx_daemon = on
 #
 # See http://nginx.org/en/docs/ngx_core_module.html#daemon.
 
-plugins = bundled
+plugins = bundled, rate-limiting, ip-restriction
 # Comma-separated list of plugins this node should load.
 # By default, only plugins bundled in official distributions are loaded via the `bundled` keyword.
 #
