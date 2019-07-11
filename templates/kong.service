@@ -1,9 +1,8 @@
 [Unit]
 Description= Kong API Gateway
 After=network.target
-After=After=systemd-user-sessions.service
-After=network-online.target
-After=rsyslog.target
+After=syslog.target
+After=postgresql.service
 
 [Service]
 User=root
