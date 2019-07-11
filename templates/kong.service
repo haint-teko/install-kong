@@ -9,6 +9,7 @@ Type=forking
 ExecStart=/usr/local/bin/kong start --conf /etc/kong/kong.conf --nginx-conf /etc/kong/custom_nginx.template
 ExecReload=/usr/local/bin/kong reload --conf /etc/kong/kong.conf --nginx-conf /etc/kong/custom_nginx.template
 ExecStop=/usr/local/bin/kong stop
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
