@@ -1,6 +1,9 @@
 [Unit]
-Description= kong service
-After=syslog.target network.target
+Description= Kong API Gateway
+After=network.target
+After=After=systemd-user-sessions.service
+After=network-online.target
+After=rsyslog.target
 
 [Service]
 User=root
@@ -9,6 +12,9 @@ Type=forking
 ExecStart=/usr/local/bin/kong start --conf /etc/kong/kong.conf --nginx-conf /etc/kong/custom_nginx.template
 ExecReload=/usr/local/bin/kong reload --conf /etc/kong/kong.conf --nginx-conf /etc/kong/custom_nginx.template
 ExecStop=/usr/local/bin/kong stop
+TimeoutSec=30
+Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
