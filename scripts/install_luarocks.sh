@@ -17,4 +17,4 @@ cd ./luarocks-2.4.3
 make build
 make install
 
-rm -rf luarocks-2.4.3*
+cd .. && rm -rf luarocks-2.4.3*
