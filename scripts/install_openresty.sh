@@ -23,6 +23,6 @@ cd ./openresty-1.13.6.2
 make
 make install
 
-rm -rf openresty-1.13.6.2*
+cd .. && rm -rf openresty-1.13.6.2*
 
 echo "export PATH=/usr/local/openresty/bin:$PATH" >> /etc/bash.bashrc
